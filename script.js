@@ -136,10 +136,12 @@ function draw() {
   if (snakeY >= 400) snakeY = 0;
 
 // Eat check (rectangle overlap)
-if (snakeX < food.x + box &&
-    snakeX + box > food.x &&
-    snakeY < food.y + box &&
-    snakeY + box > food.y) {
+if (
+  snakeX < food.x + box &&
+  snakeX + box > food.x &&
+  snakeY < food.y + box &&
+  snakeY + box > food.y
+) {
   score += 10;
   food = spawnFoodAvoiding(snake);
   updateHUD();
