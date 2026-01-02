@@ -1,12 +1,15 @@
+// Canvas setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// UI elements
 const timerEl = document.getElementById("timer");
 const scoreEl = document.getElementById("score");
 const modeEl  = document.getElementById("mode");
 const redeemBtn = document.getElementById("redeemBtn");
 const startBtn  = document.getElementById("startBtn");
 
+// Grid setup
 const box = 15; // kecilkan saiz
 const gridSize = 400 / box;
 
@@ -15,7 +18,7 @@ let timeLeft, score;
 let gameInterval = null;
 let timerInterval = null;
 let running = false;
-let godMode = false; // default OFF
+let godMode = false; // default OFF, aktif bila redeem
 
 function randGridPos() {
   return Math.floor(Math.random() * gridSize) * box;
