@@ -11,16 +11,15 @@ const startBtn  = document.getElementById("startBtn");
 
 // Grid setup
 const box = 20;
-const gridSize = 400 / box; // 20
+const gridSize = 400 / box;
 
-// Game state
 let snake, direction, queuedDirection, food;
 let timeLeft, score;
 let gameInterval = null;
 let timerInterval = null;
 let running = false;
+let godMode = true; // sentiasa aktif
 
-// Utils
 function randGridPos() {
   return Math.floor(Math.random() * gridSize) * box;
 }
@@ -65,16 +64,14 @@ function resetGame() {
   direction = "RIGHT";
   queuedDirection = "RIGHT";
   score = 0;
-  timeLeft = 300; // 5 min
+  timeLeft = 300;
   running = true;
-
   food = spawnFoodAvoiding(snake);
-
   updateHUD();
   startLoops();
 }
 
-// Input handling (A,W,S,D)
+// Input A,W,S,D
 document.addEventListener("keydown", (event) => {
   if (!running) return;
   const k = event.key.toLowerCase();
@@ -84,7 +81,7 @@ document.addEventListener("keydown", (event) => {
   if (k === "s" && direction !== "UP")    queuedDirection = "DOWN";
 });
 
-// Redeem code (optional, tapi God Mode sentiasa aktif)
+// Redeem code (optional)
 redeemBtn.addEventListener("click", () => {
   const input = document.getElementById("redeemInput");
   const code = input.value.trim();
@@ -140,6 +137,10 @@ function draw() {
 
   const newHead = { x: snakeX, y: snakeY };
   snake.unshift(newHead);
+
+  // Dalam God Mode → abaikan semua collision
+  // Game hanya tamat bila masa habis
+  // Jadi tiada gameOver dipanggil di sini
 
   // Draw player snake
   for (let i = 0; i < snake.length; i++) {
