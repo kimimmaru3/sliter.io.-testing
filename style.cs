@@ -1,0 +1,47 @@
+body {
+  text-align: center;
+  background: #000;
+  color: #00f;
+  font-family: "Times New Roman", serif;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+canvas {
+  background: #111;
+  border: 2px solid #00f;
+  margin-top: 12px;
+}
+
+.hud {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: baseline;
+  margin-top: 10px;
+}
+
+.redeem, .controls {
+  margin-top: 16px;
+}
+
+input, button {
+  padding: 8px 12px;
+  margin: 4px;
+  border-radius: 6px;
+  border: none;
+  font-family: "Times New Roman", serif;
+}
+
+button {
+  background: #00f;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00f;
+}
+
+button:hover {
+  background: #0099ff;
+}
