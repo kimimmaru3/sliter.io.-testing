@@ -71,14 +71,14 @@ function resetGame() {
   startLoops();
 }
 
-// Input A,W,S,D
+// Input A,W,S,D — benarkan semua arah
 document.addEventListener("keydown", (event) => {
   if (!running) return;
   const k = event.key.toLowerCase();
-  if (k === "a" && direction !== "RIGHT") queuedDirection = "LEFT";
-  if (k === "w" && direction !== "DOWN")  queuedDirection = "UP";
-  if (k === "d" && direction !== "LEFT")  queuedDirection = "RIGHT";
-  if (k === "s" && direction !== "UP")    queuedDirection = "DOWN";
+  if (k === "a") queuedDirection = "LEFT";
+  else if (k === "w") queuedDirection = "UP";
+  else if (k === "d") queuedDirection = "RIGHT";
+  else if (k === "s") queuedDirection = "DOWN";
 });
 
 // Redeem code (optional)
@@ -97,6 +97,8 @@ redeemBtn.addEventListener("click", () => {
 startBtn.addEventListener("click", () => {
   document.getElementById("menu").style.display = "none";
   document.getElementById("gameArea").style.display = "block";
+  const input = document.getElementById("redeemInput");
+  if (input) input.blur(); // buang fokus dari input
   resetGame();
 });
 
@@ -140,7 +142,6 @@ function draw() {
 
   // Dalam God Mode → abaikan semua collision
   // Game hanya tamat bila masa habis
-  // Jadi tiada gameOver dipanggil di sini
 
   // Draw player snake
   for (let i = 0; i < snake.length; i++) {
