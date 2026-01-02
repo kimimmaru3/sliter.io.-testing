@@ -10,7 +10,7 @@ const redeemBtn = document.getElementById("redeemBtn");
 const startBtn  = document.getElementById("startBtn");
 
 // Grid setup
-const box = 20;
+const box = 15; // lebih kecil
 const gridSize = 400 / box;
 
 let snake, direction, queuedDirection, food;
@@ -18,7 +18,7 @@ let timeLeft, score;
 let gameInterval = null;
 let timerInterval = null;
 let running = false;
-let godMode = true; // sentiasa aktif
+let godMode = false; // default OFF, aktif bila redeem
 
 function randGridPos() {
   return Math.floor(Math.random() * gridSize) * box;
@@ -37,7 +37,7 @@ function spawnFoodAvoiding(occupiedCells) {
 function updateHUD() {
   timerEl.innerText = "Masa: " + timeLeft + "s";
   scoreEl.innerText = "Skor: " + score;
-  modeEl.innerText  = "Mode: God Mode";
+  modeEl.innerText  = "Mode: " + (godMode ? "God Mode" : "Normal");
 }
 
 function gameOver(message) {
@@ -55,7 +55,9 @@ function stopLoops() {
 
 function startLoops() {
   stopLoops();
-  gameInterval = setInterval(draw, 100);
+  let speed = Math.max(50, 150 - snake.length * 2); 
+  // mula 150ms, makin panjang makin laju, minimum 50ms
+  gameInterval = setInterval(draw, speed);
   timerInterval = setInterval(updateTimer, 1000);
 }
 
@@ -71,7 +73,7 @@ function resetGame() {
   startLoops();
 }
 
-// Input A,W,S,D — benarkan semua arah
+// Input A,W,S,D
 document.addEventListener("keydown", (event) => {
   if (!running) return;
   const k = event.key.toLowerCase();
@@ -81,12 +83,14 @@ document.addEventListener("keydown", (event) => {
   else if (k === "s") queuedDirection = "DOWN";
 });
 
-// Redeem code (optional)
+// Redeem code
 redeemBtn.addEventListener("click", () => {
   const input = document.getElementById("redeemInput");
   const code = input.value.trim();
   if (code === "kingmod") {
-    alert("✅ Redeem berjaya! God Mode sentiasa aktif.");
+    godMode = true;
+    alert("✅ Redeem berjaya! God Mode aktif.");
+    updateHUD();
     input.value = "";
   } else {
     alert("❌ Kod salah!");
@@ -98,7 +102,7 @@ startBtn.addEventListener("click", () => {
   document.getElementById("menu").style.display = "none";
   document.getElementById("gameArea").style.display = "block";
   const input = document.getElementById("redeemInput");
-  if (input) input.blur(); // buang fokus dari input
+  if (input) input.blur();
   resetGame();
 });
 
@@ -128,22 +132,37 @@ function draw() {
   if (direction === "RIGHT") snakeX += box;
   if (direction === "DOWN")  snakeY += box;
 
+  // Wrap-around dinding
+  if (snakeX < 0) snakeX = 400 - box;
+  if (snakeX >= 400) snakeX = 0;
+  if (snakeY < 0) snakeY = 400 - box;
+  if (snakeY >= 400) snakeY = 0;
+
   // Eat check
   if (snakeX === food.x && snakeY === food.y) {
     score += 10;
     food = spawnFoodAvoiding(snake);
     updateHUD();
+    // restart loop dengan speed baru
+    startLoops();
   } else {
     snake.pop();
   }
 
   const newHead = { x: snakeX, y: snakeY };
+
+  // Collision check kalau bukan God Mode
+  if (!godMode) {
+    const hitSelf = snake.some((seg, i) => i !== 0 && seg.x === newHead.x && seg.y === newHead.y);
+    if (hitSelf) {
+      gameOver("Game Over! Ular makan diri sendiri.");
+      return;
+    }
+  }
+
   snake.unshift(newHead);
 
-  // Dalam God Mode → abaikan semua collision
-  // Game hanya tamat bila masa habis
-
-  // Draw player snake
+  // Draw snake
   for (let i = 0; i < snake.length; i++) {
     ctx.fillStyle = (i === 0) ? "#00f" : "#0ff";
     ctx.fillRect(snake[i].x, snake[i].y, box, box);
