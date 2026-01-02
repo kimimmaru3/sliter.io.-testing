@@ -135,15 +135,18 @@ function draw() {
   if (snakeY < 0) snakeY = 400 - box;
   if (snakeY >= 400) snakeY = 0;
 
-  // Eat check
-  if (snakeX === food.x && snakeY === food.y) {
-    score += 10;
-    food = spawnFoodAvoiding(snake);
-    updateHUD();
-    startLoops(); // restart loop dengan speed baru
-  } else {
-    snake.pop();
-  }
+// Eat check (rectangle overlap)
+if (snakeX < food.x + box &&
+    snakeX + box > food.x &&
+    snakeY < food.y + box &&
+    snakeY + box > food.y) {
+  score += 10;
+  food = spawnFoodAvoiding(snake);
+  updateHUD();
+  startLoops(); // restart loop dengan speed baru
+} else {
+  snake.pop();
+}
 
   const newHead = { x: snakeX, y: snakeY };
 
