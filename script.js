@@ -1,16 +1,13 @@
-// Canvas setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// UI elements
 const timerEl = document.getElementById("timer");
 const scoreEl = document.getElementById("score");
 const modeEl  = document.getElementById("mode");
 const redeemBtn = document.getElementById("redeemBtn");
 const startBtn  = document.getElementById("startBtn");
 
-// Grid setup
-const box = 15; // lebih kecil
+const box = 15; // kecilkan saiz
 const gridSize = 400 / box;
 
 let snake, direction, queuedDirection, food;
@@ -18,7 +15,7 @@ let timeLeft, score;
 let gameInterval = null;
 let timerInterval = null;
 let running = false;
-let godMode = false; // default OFF, aktif bila redeem
+let godMode = false; // default OFF
 
 function randGridPos() {
   return Math.floor(Math.random() * gridSize) * box;
@@ -49,14 +46,11 @@ function gameOver(message) {
 function stopLoops() {
   if (gameInterval) clearInterval(gameInterval);
   if (timerInterval) clearInterval(timerInterval);
-  gameInterval = null;
-  timerInterval = null;
 }
 
 function startLoops() {
   stopLoops();
   let speed = Math.max(50, 150 - snake.length * 2); 
-  // mula 150ms, makin panjang makin laju, minimum 50ms
   gameInterval = setInterval(draw, speed);
   timerInterval = setInterval(updateTimer, 1000);
 }
@@ -73,7 +67,7 @@ function resetGame() {
   startLoops();
 }
 
-// Input A,W,S,D
+// Kawalan A,W,S,D
 document.addEventListener("keydown", (event) => {
   if (!running) return;
   const k = event.key.toLowerCase();
@@ -143,8 +137,7 @@ function draw() {
     score += 10;
     food = spawnFoodAvoiding(snake);
     updateHUD();
-    // restart loop dengan speed baru
-    startLoops();
+    startLoops(); // restart loop dengan speed baru
   } else {
     snake.pop();
   }
