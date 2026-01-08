@@ -45,3 +45,39 @@ button {
 button:hover {
   background: #0099ff;
 }
+
+/* Mobile controls */
+.controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.ctrl {
+  font-size: 24px;
+  padding: 12px;
+  margin: 4px;
+  border-radius: 8px;
+  background: #00f;
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 8px #00f;
+}
+
+.ctrl:active {
+  background: #0099ff;
+}
+
+.boost {
+  margin-top: 10px;
+  font-size: 20px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: orange;
+  color: #000;
+  border: none;
+  box-shadow: 0 0 8px orange;
+}

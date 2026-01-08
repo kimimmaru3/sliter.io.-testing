@@ -10,7 +10,7 @@ const redeemBtn = document.getElementById("redeemBtn");
 const startBtn  = document.getElementById("startBtn");
 
 // Grid setup
-const box = 15; // kecilkan saiz
+const box = 15; 
 const gridSize = 400 / box;
 
 let snake, direction, queuedDirection, food;
@@ -18,7 +18,8 @@ let timeLeft, score;
 let gameInterval = null;
 let timerInterval = null;
 let running = false;
-let godMode = false; // default OFF, aktif bila redeem
+let godMode = false; 
+let boosting = false; 
 
 function randGridPos() {
   return Math.floor(Math.random() * gridSize) * box;
@@ -53,7 +54,8 @@ function stopLoops() {
 
 function startLoops() {
   stopLoops();
-  let speed = Math.max(50, 150 - snake.length * 2); 
+  let baseSpeed = Math.max(50, 150 - snake.length * 2);
+  let speed = boosting ? baseSpeed / 2 : baseSpeed; 
   gameInterval = setInterval(draw, speed);
   timerInterval = setInterval(updateTimer, 1000);
 }
@@ -70,7 +72,7 @@ function resetGame() {
   startLoops();
 }
 
-// Kawalan A,W,S,D
+// Kawalan keyboard
 document.addEventListener("keydown", (event) => {
   if (!running) return;
   const k = event.key.toLowerCase();
@@ -79,6 +81,21 @@ document.addEventListener("keydown", (event) => {
   else if (k === "d") queuedDirection = "RIGHT";
   else if (k === "s") queuedDirection = "DOWN";
 });
+
+// Kawalan mobile
+document.querySelectorAll(".ctrl").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (!running) return;
+    const dir = btn.dataset.dir;
+    queuedDirection = dir;
+  });
+});
+
+const boostBtn = document.getElementById("boostBtn");
+boostBtn.addEventListener("touchstart", () => { boosting = true; startLoops(); });
+boostBtn.addEventListener("touchend", () => { boosting = false; startLoops(); });
+boostBtn.addEventListener("mousedown", () => { boosting = true; startLoops(); });
+boostBtn.addEventListener("mouseup", () => { boosting = false; startLoops(); });
 
 // Redeem code
 redeemBtn.addEventListener("click", () => {
@@ -129,26 +146,26 @@ function draw() {
   if (direction === "RIGHT") snakeX += box;
   if (direction === "DOWN")  snakeY += box;
 
-  // Wrap-around dinding
+  // Wrap-around
   if (snakeX < 0) snakeX = 400 - box;
   if (snakeX >= 400) snakeX = 0;
   if (snakeY < 0) snakeY = 400 - box;
   if (snakeY >= 400) snakeY = 0;
 
-// Eat check (rectangle overlap)
-if (
-  snakeX < food.x + box &&
-  snakeX + box > food.x &&
-  snakeY < food.y + box &&
-  snakeY + box > food.y
-) {
-  score += 10;
-  food = spawnFoodAvoiding(snake);
-  updateHUD();
-  startLoops(); // restart loop dengan speed baru
-} else {
-  snake.pop();
-}
+  // Eat check
+  if (
+    snakeX < food.x + box &&
+    snakeX + box > food.x &&
+    snakeY < food.y + box &&
+    snakeY + box > food.y
+  ) {
+    score += 10;
+    food = spawnFoodAvoiding(snake);
+    updateHUD();
+    startLoops(); // restart loop dengan speed baru
+  } else {
+    snake.pop();
+  }
 
   const newHead = { x: snakeX, y: snakeY };
 
